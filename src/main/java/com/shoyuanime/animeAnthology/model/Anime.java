@@ -16,6 +16,6 @@ public class Anime {
     @Id
     @Column(name = "anime_id")
     private Long animeId;
-    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Levels levels;
 }

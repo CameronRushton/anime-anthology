@@ -1,8 +1,6 @@
 package com.shoyuanime.animeAnthology.controller;
 
 import com.shoyuanime.animeAnthology.dto.AnimeDTO;
-import com.shoyuanime.animeAnthology.model.Anime;
-import com.shoyuanime.animeAnthology.repository.AnimeRepository;
 import com.shoyuanime.animeAnthology.service.AnimeManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,12 +13,10 @@ import java.util.Optional;
 @RequestMapping("api/v0/anime")
 public class AnimeController {
 
-    private AnimeRepository animeRepository;
     private AnimeManager animeManager;
 
     @Autowired
-    public AnimeController(AnimeRepository repo, AnimeManager manager) {
-        animeRepository = repo;
+    public AnimeController(AnimeManager manager) {
         animeManager = manager;
     }
 
@@ -29,7 +25,7 @@ public class AnimeController {
      */
     @GetMapping(path="/{id}")
     public ResponseEntity queryAnimeById(@PathVariable("id") Long animeId) {
-        Optional<Anime> anime = animeRepository.findById(animeId);
+        Optional<AnimeDTO> anime = animeManager.getAnime(animeId);
         return ResponseEntity.status(anime.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(anime.orElse(null));
     }
 
@@ -50,11 +46,11 @@ public class AnimeController {
      */
     @DeleteMapping(path="/{id}")
     public ResponseEntity deleteAnime(@PathVariable("id") Long animeId) {
-        if (!animeRepository.existsById(animeId)) {
+        String message = animeManager.deleteAnime(animeId);
+        if (message.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        animeRepository.deleteById(animeId);
-        return ResponseEntity.status(HttpStatus.OK).body("Anime with id " + animeId + " deleted.");
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     /**
@@ -68,5 +64,4 @@ public class AnimeController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
-
 }

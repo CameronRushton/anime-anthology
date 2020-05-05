@@ -31,13 +31,30 @@ public class AnimeManager {
     public Optional<AnimeDTO> updateAnime(@Valid AnimeDTO animeDTO) {
         Optional<Anime> existingAnime = animeRepository.findById(animeDTO.getId());
         if (existingAnime.isPresent()) {
+            // levels.id isn't mapped, so we need to store it early
             Long levelsId = existingAnime.get().getLevels().getId();
             Anime a = mapper.map(animeDTO, existingAnime.get());
             a.getLevels().setId(levelsId);
             Anime updatedAnime = animeRepository.save(a);
-            return Optional.ofNullable(mapper.map(updatedAnime));
+            return Optional.of(mapper.map(updatedAnime));
         } else {
             return Optional.empty();
         }
+    }
+
+    public Optional<AnimeDTO> getAnime(Long id) {
+        Optional<Anime> foundAnime = animeRepository.findById(id);
+        if (foundAnime.isPresent()) {
+            return Optional.of(mapper.map(foundAnime.get()));
+        }
+        return Optional.empty();
+    }
+
+    public String deleteAnime(Long id) {
+        if (animeRepository.existsById(id)) {
+            animeRepository.deleteById(id);
+            return "Anime with id " + id + " deleted.";
+        }
+        return "";
     }
 }
