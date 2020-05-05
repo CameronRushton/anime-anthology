@@ -15,5 +15,7 @@ import javax.persistence.*;
 public class Anime {
     @Id
     @Column(name = "anime_id")
-    private Long id;
+    private Long animeId;
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    private Levels levels;
 }
