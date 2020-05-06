@@ -21,7 +21,7 @@ public class AnimeController {
     }
 
     /**
-     * GET /anime/{id}
+     * GET api/v0/anime/{id}
      */
     @GetMapping(path="/{id}")
     public ResponseEntity queryAnimeById(@PathVariable("id") Long animeId) {
@@ -30,7 +30,7 @@ public class AnimeController {
     }
 
     /**
-     * POST /anime
+     * POST api/v0/anime
      */
     @PostMapping
     public ResponseEntity createAnime(@RequestBody AnimeDTO dto) {
@@ -42,7 +42,7 @@ public class AnimeController {
     }
 
     /**
-     * DELETE /anime/{id}
+     * DELETE api/v0/anime/{id}
      */
     @DeleteMapping(path="/{id}")
     public ResponseEntity deleteAnime(@PathVariable("id") Long animeId) {
@@ -54,7 +54,7 @@ public class AnimeController {
     }
 
     /**
-     * PUT /anime
+     * PUT api/v0/anime
      */
     @PutMapping
     public ResponseEntity updateAnime(@RequestBody AnimeDTO dto) {
