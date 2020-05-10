@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @ToString
 public class AnimeDTO {
     @Id
+    @NotNull
     private Long id;
     private Levels levels;
 }
