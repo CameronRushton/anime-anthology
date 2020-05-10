@@ -50,7 +50,7 @@ public class AnimeControllerTest {
 
     @Test
     public void testCreateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Levels.builder().build()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Levels()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
         when(animeRepository.save(anime)).thenReturn(anime);
         mockMvc.perform(post("/api/v0/anime")
@@ -61,7 +61,7 @@ public class AnimeControllerTest {
 
     @Test
     public void testCreateAnimeAlreadyExists() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Levels.builder().build()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Levels()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(true);
         mockMvc.perform(post("/api/v0/anime")
                 .contentType(MediaType.APPLICATION_JSON)

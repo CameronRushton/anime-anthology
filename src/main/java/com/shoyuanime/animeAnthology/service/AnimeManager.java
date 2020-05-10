@@ -3,6 +3,7 @@ package com.shoyuanime.animeAnthology.service;
 import com.shoyuanime.animeAnthology.dto.AnimeDTO;
 import com.shoyuanime.animeAnthology.mapper.AnimeMapper;
 import com.shoyuanime.animeAnthology.model.Anime;
+import com.shoyuanime.animeAnthology.model.Levels;
 import com.shoyuanime.animeAnthology.repository.AnimeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ public class AnimeManager {
             return Optional.empty();
         }
         Anime newAnime = mapper.map(animeDTO);
+        if (newAnime.getLevels() == null) {
+            newAnime.setLevels(new Levels());
+        }
         return Optional.of(mapper.map(animeRepository.save(newAnime)));
     }
 
