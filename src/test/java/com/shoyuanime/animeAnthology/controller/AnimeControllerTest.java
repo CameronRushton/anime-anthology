@@ -2,6 +2,7 @@ package com.shoyuanime.animeAnthology.controller;
 
 import com.shoyuanime.animeAnthology.mapper.AnimeMapper;
 import com.shoyuanime.animeAnthology.model.Anime;
+import com.shoyuanime.animeAnthology.model.Cover;
 import com.shoyuanime.animeAnthology.model.Level;
 import com.shoyuanime.animeAnthology.repository.AnimeRepository;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.shoyuanime.animeAnthology.util.JsonMapper.toJson;
@@ -50,8 +53,9 @@ public class AnimeControllerTest {
 
     @Test
     public void testCreateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Level()).coverUrl(new Cover()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
+        when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(new ArrayList<>());
         when(animeRepository.save(anime)).thenReturn(anime);
         mockMvc.perform(post("/api/v0/anime")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -70,9 +74,22 @@ public class AnimeControllerTest {
     }
 
     @Test
+    public void testCreateAnimeAlreadyExistsInSeries() throws Exception {
+        Anime anime = Anime.builder().animeId(1L).build();
+        when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
+        List<Anime> animeThatAlreadyExistAsSeries = new ArrayList<>();
+        animeThatAlreadyExistAsSeries.add(new Anime());
+        when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(animeThatAlreadyExistAsSeries);
+        mockMvc.perform(post("/api/v0/anime")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(animeMapper.map(anime))))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     public void testUpdateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).build();
-        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).coverUrl(new Cover()).build();
+        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).coverUrl(new Cover()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.of(anime));
         when(animeRepository.save(anime)).thenReturn(updatedAnime);
         mockMvc.perform(put("/api/v0/anime")
