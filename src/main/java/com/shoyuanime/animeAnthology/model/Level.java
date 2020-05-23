@@ -16,7 +16,7 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Levels {
+public class Level {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

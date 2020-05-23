@@ -2,7 +2,7 @@ package com.shoyuanime.animeAnthology.controller;
 
 import com.shoyuanime.animeAnthology.mapper.AnimeMapper;
 import com.shoyuanime.animeAnthology.model.Anime;
-import com.shoyuanime.animeAnthology.model.Levels;
+import com.shoyuanime.animeAnthology.model.Level;
 import com.shoyuanime.animeAnthology.repository.AnimeRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class AnimeControllerTest {
 
     @Test
     public void testCreateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(new Levels()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
         when(animeRepository.save(anime)).thenReturn(anime);
         mockMvc.perform(post("/api/v0/anime")
@@ -61,7 +61,7 @@ public class AnimeControllerTest {
 
     @Test
     public void testCreateAnimeAlreadyExists() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(new Levels()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(true);
         mockMvc.perform(post("/api/v0/anime")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,8 +71,8 @@ public class AnimeControllerTest {
 
     @Test
     public void testUpdateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Levels.builder().id(1L).beginner(10L).build()).build();
-        Anime updatedAnime = Anime.builder().animeId(1L).levels(Levels.builder().beginner(50L).build()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).build();
+        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.of(anime));
         when(animeRepository.save(anime)).thenReturn(updatedAnime);
         mockMvc.perform(put("/api/v0/anime")
@@ -84,7 +84,7 @@ public class AnimeControllerTest {
 
     @Test
     public void testUpdateAnimeDoesNotExist() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Levels.builder().id(1L).beginner(10L).build()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.empty());
         mockMvc.perform(put("/api/v0/anime")
                 .contentType(MediaType.APPLICATION_JSON)
