@@ -1,5 +1,6 @@
 package com.shoyuanime.animeAnthology.configuration.security;
 
+import com.shoyuanime.animeAnthology.model.Role;
 import com.shoyuanime.animeAnthology.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -31,7 +32,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
-//                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("**/admin/**").hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))

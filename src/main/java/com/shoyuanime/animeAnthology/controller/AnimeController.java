@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("api/v0/anime")
 public class AnimeController {
 
     private AnimeManager animeManager;
@@ -23,7 +22,7 @@ public class AnimeController {
     /**
      * GET api/v0/anime/{id}
      */
-    @GetMapping(path="/{id}")
+    @GetMapping(path="api/v0/anime/{id}")
     public ResponseEntity queryAnimeById(@PathVariable("id") Long animeId) {
         Optional<AnimeDTO> anime = animeManager.getAnime(animeId);
         return ResponseEntity.status(anime.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(anime.orElse(null));
@@ -32,7 +31,7 @@ public class AnimeController {
     /**
      * POST api/v0/anime
      */
-    @PostMapping
+    @PostMapping(path="api/v0/admin/anime")
     public ResponseEntity createAnime(@RequestBody AnimeDTO dto) {
         Optional<AnimeDTO> response = animeManager.createAnime(dto);
         if (response.isPresent()) {
@@ -44,7 +43,7 @@ public class AnimeController {
     /**
      * DELETE api/v0/anime/{id}
      */
-    @DeleteMapping(path="/{id}")
+    @DeleteMapping(path="api/v0/admin/anime/{id}")
     public ResponseEntity deleteAnime(@PathVariable("id") Long animeId) {
         String message = animeManager.deleteAnime(animeId);
         if (message.isEmpty()) {
@@ -54,7 +53,7 @@ public class AnimeController {
     }
 
     /**
-     * PUT api/v0/anime
+     * PUT api/v0/admin/anime
      */
     @PutMapping
     public ResponseEntity updateAnime(@RequestBody AnimeDTO dto) {
