@@ -55,7 +55,7 @@ public class AnimeController {
     /**
      * PUT api/v0/admin/anime
      */
-    @PutMapping
+    @PutMapping(path="api/v0/admin/anime")
     public ResponseEntity updateAnime(@RequestBody AnimeDTO dto) {
         Optional<AnimeDTO> response = animeManager.updateAnime(dto);
         if (response.isPresent()) {

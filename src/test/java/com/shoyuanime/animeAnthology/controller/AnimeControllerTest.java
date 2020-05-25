@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -28,9 +29,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AnimeControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
-    @Autowired
     private AnimeMapper animeMapper;
+    @Autowired
+    private MockMvc mockMvc;
 
     @MockBean
     private AnimeRepository animeRepository;
@@ -52,47 +53,51 @@ public class AnimeControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testCreateAnime() throws Exception {
         Anime anime = Anime.builder().animeId(1L).levels(new Level()).coverUrl(new Cover()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
         when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(new ArrayList<>());
         when(animeRepository.save(anime)).thenReturn(anime);
-        mockMvc.perform(post("/api/v0/anime")
+        mockMvc.perform(post("/api/v0/admin/anime")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(animeMapper.map(anime))))
                 .andExpect(status().isCreated());
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testCreateAnimeAlreadyExists() throws Exception {
         Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(true);
-        mockMvc.perform(post("/api/v0/anime")
+        mockMvc.perform(post("/api/v0/admin/anime")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(animeMapper.map(anime))))
                 .andExpect(status().isConflict());
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testCreateAnimeAlreadyExistsInSeries() throws Exception {
         Anime anime = Anime.builder().animeId(1L).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
         List<Anime> animeThatAlreadyExistAsSeries = new ArrayList<>();
         animeThatAlreadyExistAsSeries.add(new Anime());
         when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(animeThatAlreadyExistAsSeries);
-        mockMvc.perform(post("/api/v0/anime")
+        mockMvc.perform(post("/api/v0/admin/anime")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(animeMapper.map(anime))))
                 .andExpect(status().isConflict());
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testUpdateAnime() throws Exception {
         Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).coverUrl(new Cover()).build();
         Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).coverUrl(new Cover()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.of(anime));
         when(animeRepository.save(anime)).thenReturn(updatedAnime);
-        mockMvc.perform(put("/api/v0/anime")
+        mockMvc.perform(put("/api/v0/admin/anime")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(animeMapper.map(anime))))
                 .andExpect(status().isOk())
@@ -100,28 +105,31 @@ public class AnimeControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testUpdateAnimeDoesNotExist() throws Exception {
         Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.empty());
-        mockMvc.perform(put("/api/v0/anime")
+        mockMvc.perform(put("/api/v0/admin/anime")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(animeMapper.map(anime))))
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testDeleteAnime() throws Exception {
         Anime anime = Anime.builder().animeId(1L).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(true);
-        mockMvc.perform(delete("/api/v0/anime/{id}", anime.getAnimeId()))
+        mockMvc.perform(delete("/api/v0/admin/anime/{id}", anime.getAnimeId()))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testDeleteAnimeNotFound() throws Exception {
         Anime anime = Anime.builder().animeId(1L).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
-        mockMvc.perform(delete("/api/v0/anime/{id}", anime.getAnimeId()))
+        mockMvc.perform(delete("/api/v0/admin/anime/{id}", anime.getAnimeId()))
                 .andExpect(status().isNotFound());
     }
 }
