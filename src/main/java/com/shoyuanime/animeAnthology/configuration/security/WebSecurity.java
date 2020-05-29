@@ -3,7 +3,6 @@ package com.shoyuanime.animeAnthology.configuration.security;
 import com.shoyuanime.animeAnthology.model.Role;
 import com.shoyuanime.animeAnthology.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +17,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
-
-import static com.shoyuanime.animeAnthology.configuration.security.SecurityConstants.SIGN_UP_URL;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
@@ -41,11 +38,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests()
-                .antMatchers(SIGN_UP_URL, "/authenticate").permitAll()
-                .antMatchers("**/admin/**").hasRole(Role.ADMIN.name())
-                .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+                .antMatchers("/api/v0/admin/**").hasRole(Role.ADMIN.name())
+                .anyRequest().permitAll()
+                .and().addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

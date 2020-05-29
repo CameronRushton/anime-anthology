@@ -66,6 +66,19 @@ public class AnimeControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "secret")
+    public void testCreateAnimeForbidden() throws Exception {
+        Anime anime = Anime.builder().animeId(1L).levels(new Level()).coverUrl(new Cover()).build();
+        when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
+        when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(new ArrayList<>());
+        when(animeRepository.save(anime)).thenReturn(anime);
+        mockMvc.perform(post("/api/v0/admin/anime")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(animeMapper.map(anime))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testCreateAnimeAlreadyExists() throws Exception {
         Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
@@ -102,6 +115,19 @@ public class AnimeControllerTest {
                 .content(toJson(animeMapper.map(anime))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.levels.beginner").value(50L));
+    }
+
+    @Test
+    @WithMockUser(username = "user1", password = "secret")
+    public void testUpdateAnimeForbidden() throws Exception {
+        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).coverUrl(new Cover()).build();
+        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).coverUrl(new Cover()).build();
+        when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.of(anime));
+        when(animeRepository.save(anime)).thenReturn(updatedAnime);
+        mockMvc.perform(put("/api/v0/admin/anime")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(animeMapper.map(anime))))
+                .andExpect(status().isForbidden());
     }
 
     @Test
