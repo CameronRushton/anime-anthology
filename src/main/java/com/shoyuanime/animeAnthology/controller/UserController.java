@@ -25,8 +25,8 @@ public class UserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity signUp(@RequestBody AppUser user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         if (!appUserRepository.existsByUsername(user.getUsername())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             appUserRepository.save(user);
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username taken.");

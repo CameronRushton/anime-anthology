@@ -29,7 +29,7 @@ public class AnimeController {
     }
 
     /**
-     * POST api/v0/anime
+     * POST api/v0/admin/anime
      */
     @PostMapping(path="api/v0/admin/anime")
     public ResponseEntity createAnime(@RequestBody AnimeDTO dto) {
@@ -41,7 +41,7 @@ public class AnimeController {
     }
 
     /**
-     * DELETE api/v0/anime/{id}
+     * DELETE api/v0/admin/anime/{id}
      */
     @DeleteMapping(path="api/v0/admin/anime/{id}")
     public ResponseEntity deleteAnime(@PathVariable("id") Long animeId) {
