@@ -3,7 +3,6 @@ package com.shoyuanime.animeAnthology.service;
 import com.shoyuanime.animeAnthology.dto.AnimeDTO;
 import com.shoyuanime.animeAnthology.mapper.AnimeMapper;
 import com.shoyuanime.animeAnthology.model.Anime;
-import com.shoyuanime.animeAnthology.model.Cover;
 import com.shoyuanime.animeAnthology.model.Level;
 import com.shoyuanime.animeAnthology.repository.AnimeRepository;
 //import com.shoyuanime.animeAnthology.repository.SeriesRepository;
@@ -45,9 +44,6 @@ public class AnimeManager {
         if (newAnime.getLevels() == null) {
             newAnime.setLevels(new Level());
         }
-        if (newAnime.getCoverUrl() == null) {
-            newAnime.setCoverUrl(new Cover());
-        }
         return Optional.of(mapper.map(animeRepository.save(newAnime)));
     }
 
@@ -56,19 +52,12 @@ public class AnimeManager {
         if (existingAnime.isPresent()) {
             // levels.id isn't mapped, so we need to store it early
             Long levelId = existingAnime.get().getLevels().getId();
-            Long coverId = existingAnime.get().getCoverUrl().getId();
             Anime a = mapper.map(animeDTO, new Anime());
             if (a.getLevels() != null) {
                 a.getLevels().setId(levelId);
             } else {
                 a.setLevels(existingAnime.get().getLevels());
             }
-            if (a.getCoverUrl() != null) {
-                a.getCoverUrl().setId(coverId);
-            } else {
-                a.setCoverUrl(existingAnime.get().getCoverUrl());
-            }
-            if (a.getBannerUrl() == null) a.setBannerUrl(existingAnime.get().getBannerUrl());
             if (a.getSeries() == null) a.setSeries(existingAnime.get().getSeries());
             if (a.getRelated() == null) a.setRelated(existingAnime.get().getRelated());
             Anime updatedAnime = animeRepository.save(a);

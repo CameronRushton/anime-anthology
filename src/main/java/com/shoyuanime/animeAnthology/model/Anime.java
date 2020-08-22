@@ -5,7 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +27,10 @@ public class Anime {
     private Long animeId;
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Level levels;
-    @OneToOne(cascade = {CascadeType.ALL})
-    private Cover coverUrl;
-    private String bannerUrl = "";
-//    @ElementCollection
     @ElementCollection
     @JoinColumn(name = "anime_id")
     private List<Long> series; // The other season IDs of the main anime.
 //    @ElementCollection
+    // This field is for the case where the user asks for recommended anime series but doesn't give us
     private ArrayList<Long> related = new ArrayList<>(); // The related anime IDs.
 }

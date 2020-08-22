@@ -2,7 +2,6 @@ package com.shoyuanime.animeAnthology.controller;
 
 import com.shoyuanime.animeAnthology.mapper.AnimeMapper;
 import com.shoyuanime.animeAnthology.model.Anime;
-import com.shoyuanime.animeAnthology.model.Cover;
 import com.shoyuanime.animeAnthology.model.Level;
 import com.shoyuanime.animeAnthology.repository.AnimeRepository;
 import org.junit.jupiter.api.Test;
@@ -55,7 +54,7 @@ public class AnimeControllerTest {
     @Test
     @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testCreateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(new Level()).coverUrl(new Cover()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
         when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(new ArrayList<>());
         when(animeRepository.save(anime)).thenReturn(anime);
@@ -68,7 +67,7 @@ public class AnimeControllerTest {
     @Test
     @WithMockUser(username = "user1", password = "secret")
     public void testCreateAnimeForbidden() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(new Level()).coverUrl(new Cover()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(new Level()).build();
         when(animeRepository.existsById(anime.getAnimeId())).thenReturn(false);
         when(animeRepository.getAllBySeries(anime.getAnimeId())).thenReturn(new ArrayList<>());
         when(animeRepository.save(anime)).thenReturn(anime);
@@ -106,8 +105,8 @@ public class AnimeControllerTest {
     @Test
     @WithMockUser(username = "user1", password = "secret", roles = {"ADMIN"})
     public void testUpdateAnime() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).coverUrl(new Cover()).build();
-        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).coverUrl(new Cover()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).build();
+        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.of(anime));
         when(animeRepository.save(anime)).thenReturn(updatedAnime);
         mockMvc.perform(put("/api/v0/admin/anime")
@@ -120,8 +119,8 @@ public class AnimeControllerTest {
     @Test
     @WithMockUser(username = "user1", password = "secret")
     public void testUpdateAnimeForbidden() throws Exception {
-        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).coverUrl(new Cover()).build();
-        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).coverUrl(new Cover()).build();
+        Anime anime = Anime.builder().animeId(1L).levels(Level.builder().id(1L).beginner(10L).build()).build();
+        Anime updatedAnime = Anime.builder().animeId(1L).levels(Level.builder().beginner(50L).build()).build();
         when(animeRepository.findById(anime.getAnimeId())).thenReturn(Optional.of(anime));
         when(animeRepository.save(anime)).thenReturn(updatedAnime);
         mockMvc.perform(put("/api/v0/admin/anime")
