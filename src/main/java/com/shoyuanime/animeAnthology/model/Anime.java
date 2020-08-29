@@ -13,8 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -24,13 +24,14 @@ import java.util.List;
 public class Anime {
     @Id
     @Column(name = "anime_id")
-    private Long animeId;
+    private String animeId;
     @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private Level levels;
     @ElementCollection
     @JoinColumn(name = "anime_id")
-    private List<Long> series; // The other season IDs of the main anime.
-//    @ElementCollection
+    private Set<String> series; // The other season IDs of the main anime.
+    @ElementCollection
+    @JoinColumn(name = "anime_id")
     // This field is for the case where the user asks for recommended anime series but doesn't give us
-    private ArrayList<Long> related = new ArrayList<>(); // The related anime IDs.
+    private Set<String> related; // The related anime IDs.
 }

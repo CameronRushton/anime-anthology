@@ -1,6 +1,8 @@
 package com.shoyuanime.animeAnthology;
 
 import com.shoyuanime.animeAnthology.controller.AnimeController;
+import com.shoyuanime.animeAnthology.dto.AnimeDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -18,9 +20,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
+@Slf4j
 public class AnimeAnthology {
 
     @Bean
@@ -36,20 +40,23 @@ public class AnimeAnthology {
 
     @EventListener(ContextRefreshedEvent.class)
     private void createDatabase() {
-//        JSONParser jsonParser = new JSONParser();
-//        try {
-//            InputStream dbAsStream = resourceFile.getInputStream();
-//            JSONArray jsonObject = (JSONArray) jsonParser.parse(new InputStreamReader(dbAsStream, "UTF-8"));
-//            for (Object o : jsonObject) {
-//                JSONObject anime = (JSONObject) o;
-//                List<Long> series = (List<Long>) anime.get("series");
-//                System.out.println(anime);
-//                System.out.println(series);
-////              animeController.createAnime(AnimeDTO.builder().id((Long) anime.get("id")).series(series).build());
-//            }
-//        } catch (IOException | ParseException e) {
-//            e.printStackTrace();
-//        }
+        if (false) { // TODO: Populate using sql file
+            JSONParser jsonParser = new JSONParser();
+            try {
+                InputStream dbAsStream = resourceFile.getInputStream();
+                JSONArray jsonObject = (JSONArray) jsonParser.parse(new InputStreamReader(dbAsStream, "UTF-8"));
+                for (Object o : jsonObject) {
+                    JSONObject anime = (JSONObject) o;
+                    JSONArray series = (JSONArray) anime.get("series");
+                    Set<String> seriesSet = new HashSet<>(series);
+                    String animeId = anime.get("id").toString();
+                    animeController.createAnime(AnimeDTO.builder().id(animeId).series(seriesSet).build());
+                }
+                log.debug("Finished populating database.");
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {

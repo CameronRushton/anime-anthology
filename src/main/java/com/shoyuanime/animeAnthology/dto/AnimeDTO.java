@@ -7,7 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -15,8 +15,8 @@ import java.util.List;
 public class AnimeDTO {
     @Id
     @NotNull
-    private Long id;
+    private String id;
     private Level levels;
-    private List<Long> series; // The other season IDs of the main anime.
-    private List<Long> related; // The related anime IDs.
+    private Set<String> series; // The other season IDs of the main anime.
+    private Set<String> related; // The related anime IDs.
 }
