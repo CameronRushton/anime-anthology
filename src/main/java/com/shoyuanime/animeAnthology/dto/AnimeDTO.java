@@ -1,12 +1,13 @@
 package com.shoyuanime.animeAnthology.dto;
 
-import com.shoyuanime.animeAnthology.model.Levels;
+import com.shoyuanime.animeAnthology.model.Level;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import java.util.Set;
 
 @Data
 @Builder
@@ -14,6 +15,8 @@ import javax.validation.constraints.NotNull;
 public class AnimeDTO {
     @Id
     @NotNull
-    private Long id;
-    private Levels levels;
+    private String id;
+    private Level levels;
+    private Set<String> series; // The other season IDs of the main anime.
+    private Set<String> related; // The related anime IDs.
 }
